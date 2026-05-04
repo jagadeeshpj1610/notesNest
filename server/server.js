@@ -14,7 +14,7 @@ connectToDb()
 const PORT = 8000
 
 app.listen(PORT, () => {
-    console.log("Server is Running Babe....~PJ Server");
+    console.log(`Server is Running Babe....~PJ Server on ${PORT}`);
 })
 
 module.exports = app
