@@ -1,6 +1,8 @@
 const User = require("../models/userModel")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const sendOTPEmail = require('../utils/sendOtpEmail')
+const { use } = require("../config/nodemailer")
 
 
 const generateAccessToken = (user) => {
@@ -19,6 +21,10 @@ const generateRefreshToken = (user) => {
     )
 }
 
+const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString()
+}
+
 const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -32,14 +38,15 @@ const register = async (req, res) => {
             return res.status(409).json({ message: "email already registered" })
         }
         const hashedPassword = await bcrypt.hash(password, 10)
+        const otp = generateOTP()
+        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000)
         const user = await User.create({
             name, email, password: hashedPassword,
+            resetOTP: otp,
+            resetOTPExpiry: otpExpiry
         })
-        const token = jwt.sign(
-            { id: user._id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        )
+
+        await sendOTPEmail(email, otp)
 
         const accessToken = generateAccessToken(user)
         const refreshToken = generateRefreshToken(user)
@@ -47,7 +54,7 @@ const register = async (req, res) => {
         await User.findByIdAndUpdate(user._id, { refreshToken })
 
         res.status(201).json({
-            message: "Registration successful",
+            message: "Registration successful. OTP sent to your email.",
             accessToken,
             refreshToken,
             user: {
@@ -55,10 +62,50 @@ const register = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                isEmailVerified: user.isEmailVerified
             }
         })
     } catch (error) {
         console.log("Register error", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+const verifyOTP = async (req, res) => {
+    try {
+        const { email, otp } = req.body
+
+        if (!email || !otp) {
+            return res.status(400).json({ message: "Email and OTP are required" })
+        }
+
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        if (user.isEmailVerified) {
+            return res.status(400).json({ message: "Email already verified" })
+        }
+
+        if (user.resetOTP !== otp) {
+            return res.status(400).json({ message: "Invalid OTP" })
+        }
+
+        if (user.resetOTPExpiry < new Date()) {
+            return res.status(400).json({ message: "OTP expired" })
+        }
+
+        await User.findByIdAndUpdate(user._id, {
+            isEmailVerified: true,
+            resetOTP: null,
+            resetOTPExpiry: null,
+        })
+
+        res.status(200).json({ message: "Email verified successfully" })
+
+    } catch (error) {
+        console.log("OTP verify error", error)
         res.status(500).json({ message: "Internal server error" })
     }
 }
