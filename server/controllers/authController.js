@@ -2,7 +2,7 @@ const User = require("../models/userModel")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const sendOTPEmail = require('../utils/sendOtpEmail')
-const { use } = require("../config/nodemailer")
+
 
 
 const generateAccessToken = (user) => {
@@ -124,11 +124,6 @@ const login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ message: "invalid credentials" })
         }
-        const token = jwt.sign(
-            { id: user._id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        )
 
         const accessToken = generateAccessToken(user)
         const refreshToken = generateRefreshToken(user)
