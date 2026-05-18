@@ -2,6 +2,23 @@ const User = require("../models/userModel")
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+
+const generateAccessToken = (user) => {
+    return jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '15m' }
+    )
+}
+
+const generateRefreshToken = (user) => {
+    return jwt.sign(
+        { id: user._id },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: '7d' }
+    )
+}
+
 const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -23,9 +40,16 @@ const register = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '7d' }
         )
+
+        const accessToken = generateAccessToken(user)
+        const refreshToken = generateRefreshToken(user)
+
+        await User.findByIdAndUpdate(user._id, { refreshToken })
+
         res.status(201).json({
             message: "Registration successful",
-            token,
+            accessToken,
+            refreshToken,
             user: {
                 id: user._id,
                 name: user.name,
@@ -41,64 +65,57 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const {email, password} = req.body
+        const { email, password } = req.body
         if (!email || !password) {
-            return res.status(400).json({message : "all fileds are required!"})
+            return res.status(400).json({ message: "all fileds are required!" })
         }
-        const user = await User.findOne({email})
+        const user = await User.findOne({ email })
         if (!user) {
-           return res.status(400).json({message: "user not found"}) 
+            return res.status(400).json({ message: "user not found" })
         }
         const isPasswordValid = await bcrypt.compare(password, user.password)
         if (!isPasswordValid) {
-            return res.status(401).json({message : "invalid credentials"})
+            return res.status(401).json({ message: "invalid credentials" })
         }
         const token = jwt.sign(
-            {id:user._id, role:user.role},
+            { id: user._id, role: user.role },
             process.env.JWT_SECRET,
-            {expiresIn:'7d'}
+            { expiresIn: '7d' }
         )
+
+        const accessToken = generateAccessToken(user)
+        const refreshToken = generateRefreshToken(user)
+
+        await User.findByIdAndUpdate(user._id, { refreshToken })
+
         res.status(200).json({
-            message:"Login sucessfull",
-            token,
-            user:{
-                id:user._id,
-                name:user.name,
+            message: "Login sucessfull",
+            accessToken,
+            refreshToken,
+            user: {
+                id: user._id,
+                name: user.name,
                 email: user.email,
                 role: user.role,
             }
         })
     } catch (error) {
         console.log("Login error", error);
-        res.status(500).json({message:"server error"})
+        res.status(500).json({ message: "server error" })
     }
 }
 
-const logout = async(req, res) => {
+const logout = async (req, res) => {
     try {
-        await User.findByIdAndUpdate(req.user.id, {refreshToken:""})
-        res.status(200).json({message:"Logout Successful"})
+        await User.findByIdAndUpdate(req.user.id, { refreshToken: "" })
+        res.status(200).json({ message: "Logout Successful" })
     } catch (error) {
         console.log("Logout Error", error);
-        res.status(500).json({message: "server error"})
+        res.status(500).json({ message: "server error" })
     }
 }
 
-const generateAccessToken = (user) => {
-    return jwt.sign(
-        { id: user._id, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: '15m' }
-    )
-}
 
-const generateRefreshToken = (user) => {
-    return jwt.sign(
-        { id: user._id },
-        process.env.JWT_REFRESH_SECRET,
-        { expiresIn: '7d' }
-    )
-}
 
 
 const refresh = async (req, res) => {
@@ -126,10 +143,11 @@ const refresh = async (req, res) => {
             refreshToken: newRefreshToken,
         })
 
+
     } catch (error) {
         console.log("Refresh error", error)
         res.status(403).json({ message: "Invalid or expired refresh token" })
     }
 }
 
-module.exports = {register, login, logout}
+module.exports = { register, login, logout, refresh }
