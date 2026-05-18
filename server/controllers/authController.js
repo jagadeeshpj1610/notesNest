@@ -197,4 +197,4 @@ const refresh = async (req, res) => {
     }
 }
 
-module.exports = { register, login, logout, refresh }
+module.exports = { register, login, logout, refresh, verifyOTP }
