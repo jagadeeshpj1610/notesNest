@@ -5,12 +5,13 @@ const authRoutes = require("./routes/authRoutes")
 
 
 const app = express()
+app.use(express.json())
 
 app.get("/", (req, res) => {
     res.send("server is running")
 })
 
-app.use('api/auth', authRoutes)
+app.use('/api/auth', authRoutes)
 
 connectToDb()
 
