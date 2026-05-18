@@ -74,4 +74,14 @@ const login = async (req, res) => {
     }
 }
 
-module.exports = {register, login}
+const logout = async(req, res) => {
+    try {
+        await User.findByIdAndUpdate(req.user.id, {refreshToken:""})
+        res.status(200).json({message:"Logout Successful"})
+    } catch (error) {
+        console.log("Logout Error", error);
+        res.status(500).json({message: "server error"})
+    }
+}
+
+module.exports = {register, login, logout}
