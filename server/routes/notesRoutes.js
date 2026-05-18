@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { uploadNote, getAllNotes, getSingleNote, deleteNote, likeNote, saveNote, addComment, downloadNote } = require('../controllers/noteController')
+const { uploadNote, getAllNotes, getSingleNote, deleteNote, likeNote, saveNote, addComment, downloadNote } = require('../controllers/notesController')
 const { protect } = require('../middleware/authMiddleware')
 const upload = require('../middleware/uploadMiddleware')
 
