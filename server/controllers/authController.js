@@ -84,4 +84,52 @@ const logout = async(req, res) => {
     }
 }
 
+const generateAccessToken = (user) => {
+    return jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '15m' }
+    )
+}
+
+const generateRefreshToken = (user) => {
+    return jwt.sign(
+        { id: user._id },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: '7d' }
+    )
+}
+
+
+const refresh = async (req, res) => {
+    try {
+        const { refreshToken } = req.body
+
+        if (!refreshToken) {
+            return res.status(401).json({ message: "No refresh token" })
+        }
+
+        const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+
+        const user = await User.findById(decoded.id)
+        if (!user || user.refreshToken !== refreshToken) {
+            return res.status(403).json({ message: "Invalid refresh token" })
+        }
+
+        const newAccessToken = generateAccessToken(user)
+        const newRefreshToken = generateRefreshToken(user)
+
+        await User.findByIdAndUpdate(user._id, { refreshToken: newRefreshToken })
+
+        res.status(200).json({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
+        })
+
+    } catch (error) {
+        console.log("Refresh error", error)
+        res.status(403).json({ message: "Invalid or expired refresh token" })
+    }
+}
+
 module.exports = {register, login, logout}
