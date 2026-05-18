@@ -1,6 +1,7 @@
 const express = require("express")
 const connectToDb = require("./config/connecToDb")
 require("dotenv").config()
+const authRoutes = require("./routes/authRoutes")
 
 
 const app = express()
@@ -8,6 +9,8 @@ const app = express()
 app.get("/", (req, res) => {
     res.send("server is running")
 })
+
+app.use('api/auth', authRoutes)
 
 connectToDb()
 
