@@ -1,11 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const { uploadNote } = require('../middleware/uploadMiddleware')
+const {searchNotes} = require('../controllers/searchController')
 const { uploadNote: uploadNoteController, getAllNotes, getSingleNote, deleteNote, likeNote, saveNote, addComment, downloadNote } = require('../controllers/notesController')
 const { protect } = require('../middleware/authMiddleware')
 
 router.post('/', protect, uploadNote.single('file'), uploadNoteController)
 router.get('/', getAllNotes)
+router.get('/search', searchNotes)
 router.get('/:id', getSingleNote)
 router.delete('/:id', protect, deleteNote)
 router.post('/:id/like', protect, likeNote)
