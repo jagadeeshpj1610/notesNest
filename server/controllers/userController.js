@@ -63,4 +63,21 @@ const uploadAvatar = async (req, res) => {
     }
 }
 
-module.exports = { getMyProfile , updateProfile, uploadAvatar }
+const getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+            .select('-password -refreshToken -resetOTP -resetOTPExpiry -email')
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        res.status(200).json({ user })
+
+    } catch (error) {
+        console.log("Get user error", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+module.exports = { getMyProfile , updateProfile, uploadAvatar, getUserById }
