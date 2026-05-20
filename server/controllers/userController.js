@@ -15,4 +15,22 @@ const getMyProfile = async (req, res) => {
     }
 }
 
-module.exports = { getMyProfile }
+const updateProfile = async (req, res) => {
+    try {
+        const { name, bio } = req.body
+
+        const user = await User.findByIdAndUpdate(
+            req.user.id,
+            { name, bio },
+            { new: true }
+        ).select('-password -refreshToken -resetOTP -resetOTPExpiry')
+
+        res.status(200).json({ message: "Profile updated", user })
+
+    } catch (error) {
+        console.log("Update profile error", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+module.exports = { getMyProfile , updateProfile }
