@@ -80,4 +80,32 @@ const getUserById = async (req, res) => {
     }
 }
 
-module.exports = { getMyProfile , updateProfile, uploadAvatar, getUserById }
+
+const getMyNotes = async (req, res) => {
+    try {
+        const notes = await Note.find({ uploader: req.user.id })
+            .sort({ createdAt: -1 })
+
+        res.status(200).json({ notes })
+
+    } catch (error) {
+        console.log("Get my notes error", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+const getMySavedNotes = async (req, res) => {
+    try {
+        const notes = await Note.find({ saves: req.user.id })
+            .populate('uploader', 'name email')
+            .sort({ createdAt: -1 })
+
+        res.status(200).json({ notes })
+
+    } catch (error) {
+        console.log("Get saved notes error", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+module.exports = { getMyProfile , updateProfile, uploadAvatar, getUserById, getMyNotes, getMySavedNotes }

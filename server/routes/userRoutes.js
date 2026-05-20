@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { getMyProfile, updateProfile, uploadAvatar, getUserById } = require('../controllers/userController')
+const { getMyProfile, updateProfile, uploadAvatar, getUserById, getMyNotes, getMySavedNotes } = require('../controllers/userController')
 const { uploadAvatar: uploadAvatarMiddleware } = require('../middleware/uploadMiddleware')
 const { protect } = require('../middleware/authMiddleware')
 
@@ -8,5 +8,7 @@ router.get('/me', protect, getMyProfile)
 router.put('/me', protect, updateProfile )
 router.put('/me/avatar', protect, uploadAvatarMiddleware.single('avatar'), uploadAvatar)
 router.get('/:id', getUserById)
+router.get('/me/notes', protect, getMyNotes)
+router.get('/me/saved', protect, getMySavedNotes)
 
 module.exports = router
