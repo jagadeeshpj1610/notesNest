@@ -108,4 +108,5 @@ const getMySavedNotes = async (req, res) => {
     }
 }
 
+
 module.exports = { getMyProfile , updateProfile, uploadAvatar, getUserById, getMyNotes, getMySavedNotes }
