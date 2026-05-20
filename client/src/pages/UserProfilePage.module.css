@@ -1,0 +1,73 @@
+.page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 20px;
+}
+
+.status {
+    text-align: center;
+    padding: 80px;
+    color: #6b7280;
+}
+
+.profileCard {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 36px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ede9fe;
+    flex-shrink: 0;
+}
+
+.info { flex: 1; }
+
+.name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 6px;
+}
+
+.bio {
+    color: #4b5563;
+    font-size: 0.9rem;
+    margin: 0 0 12px;
+    line-height: 1.5;
+}
+
+.stats {
+    font-size: 0.875rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+.sectionTitle {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.empty {
+    text-align: center;
+    padding: 60px;
+    color: #9ca3af;
+}
