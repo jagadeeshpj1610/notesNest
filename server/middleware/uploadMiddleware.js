@@ -2,7 +2,7 @@ const multer = require('multer')
 const { CloudinaryStorage } = require('multer-storage-cloudinary')
 const cloudinary = require('../config/cloudinary')
 
-const storage = new CloudinaryStorage({
+const noteStorage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: 'notenest/notes',
@@ -11,6 +11,16 @@ const storage = new CloudinaryStorage({
     }
 })
 
-const upload = multer({ storage })
+const avatarStorage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'notenest/avatars',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+        resource_type: 'image',
+    }
+})
 
-module.exports = upload
+const uploadNote = multer({ storage: noteStorage })
+const uploadAvatar = multer({ storage: avatarStorage })
+
+module.exports = { uploadNote, uploadAvatar }
