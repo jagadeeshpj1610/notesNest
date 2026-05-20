@@ -60,4 +60,17 @@ const getPopularNotes = async (req, res) => {
     }
 }
 
-module.exports = { searchNotes, filterBySubject, getPopularNotes }
+const getRecentNotes = async (req, res) => {
+    try {
+        const notes = await Note.find()
+            .populate('uploader', 'name avatar')
+            .sort({ createdAt: -1 })
+            .limit(20)
+
+        res.status(200).json({ success: true, count: notes.length, data: notes })
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message })
+    }
+}
+
+module.exports = { searchNotes, filterBySubject, getPopularNotes, getRecentNotes }
