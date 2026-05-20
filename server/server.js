@@ -3,7 +3,7 @@ const connectToDb = require("./config/connecToDb")
 require("dotenv").config()
 const authRoutes = require("./routes/authRoutes")
 const noteRoutes = require('./routes/notesRoutes')
-
+const userRoutes = require('./routes/userRoutes')
 
 const app = express()
 app.use(express.json())
@@ -14,6 +14,7 @@ app.get("/", (req, res) => {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/notes', noteRoutes)
+app.use('/api/users', userRoutes)
 
 connectToDb()
 
