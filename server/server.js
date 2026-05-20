@@ -1,4 +1,5 @@
 const express = require("express")
+const cors = require('cors')
 const connectToDb = require("./config/connecToDb")
 require("dotenv").config()
 const authRoutes = require("./routes/authRoutes")
@@ -6,6 +7,7 @@ const noteRoutes = require('./routes/notesRoutes')
 const userRoutes = require('./routes/userRoutes')
 
 const app = express()
+app.use(cors())
 app.use(express.json())
 
 app.get("/", (req, res) => {
