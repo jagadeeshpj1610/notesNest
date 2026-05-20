@@ -27,4 +27,24 @@ const searchNotes = async (req, res) => {
     }
 }
 
-module.exports = { searchNotes }
+const filterBySubject = async (req, res) => {
+    try {
+        const { subject } = req.query
+
+        if (!subject || subject.trim() === '') {
+            return res.status(400).json({ message: 'Subject is required' })
+        }
+
+        const notes = await Note.find({
+            subject: new RegExp(subject.trim(), 'i'),
+        })
+            .populate('uploader', 'name avatar')
+            .sort({ createdAt: -1 })
+
+        res.status(200).json({ success: true, count: notes.length, data: notes })
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message })
+    }
+}
+
+module.exports = { searchNotes, filterBySubject }
