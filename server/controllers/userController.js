@@ -33,4 +33,34 @@ const updateProfile = async (req, res) => {
     }
 }
 
-module.exports = { getMyProfile , updateProfile }
+const uploadAvatar = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "Image file is required" })
+        }
+
+        const user = await User.findById(req.user.id)
+
+        // Delete old avatar from cloudinary if exists
+        if (user.avatarPublicId) {
+            await cloudinary.uploader.destroy(user.avatarPublicId)
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.id,
+            {
+                avatar: req.file.path,
+                avatarPublicId: req.file.filename,
+            },
+            { new: true }
+        ).select('-password -refreshToken -resetOTP -resetOTPExpiry')
+
+        res.status(200).json({ message: "Avatar uploaded", user: updatedUser })
+
+    } catch (error) {
+        console.log("Upload avatar error", error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+module.exports = { getMyProfile , updateProfile, uploadAvatar }
