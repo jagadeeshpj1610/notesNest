@@ -22,9 +22,9 @@ function App() {
           <Route path="/notes" element={<NotesPage />} />
           <Route path="/notes/:id" element={<NoteDetailsPage />} />
 
-          {/* <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
 
-          <Route
+          {/* <Route
             path="/admin/upload"
             element={
               <ProtectedRoute>
