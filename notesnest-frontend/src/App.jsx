@@ -6,10 +6,10 @@ import ProtectedRoute from './components/ProtectedRoute'
 
 import HomePage from './pages/HomePage'
 import NotesPage from './pages/NotesPage'
-import NoteDetailsPage from './pages/NoteDetailsPage'
-import AdminLoginPage from './pages/AdminLoginPage'
-import AdminUploadPage from './pages/AdminUploadPage'
-import AdminManageNotesPage from './pages/AdminManageNotesPage'
+// import NoteDetailsPage from './pages/NoteDetailsPage'
+// import AdminLoginPage from './pages/AdminLoginPage'
+// import AdminUploadPage from './pages/AdminUploadPage'
+// import AdminManageNotesPage from './pages/AdminManageNotesPage'
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/notes" element={<NotesPage />} />
-          <Route path="/notes/:id" element={<NoteDetailsPage />} />
+          {/* <Route path="/notes/:id" element={<NoteDetailsPage />} />
 
           <Route path="/admin/login" element={<AdminLoginPage />} />
 
@@ -40,7 +40,7 @@ function App() {
                 <AdminManageNotesPage />
               </ProtectedRoute>
             }
-          />
+          /> */}
         </Routes>
       </main>
 
