@@ -24,7 +24,7 @@ function App() {
 
           <Route path="/admin/login" element={<AdminLoginPage />} />
 
-          {/* <Route
+          <Route
             path="/admin/upload"
             element={
               <ProtectedRoute>
@@ -33,7 +33,7 @@ function App() {
             }
           />
 
-          <Route
+          {/* <Route
             path="/admin/notes"
             element={
               <ProtectedRoute>
