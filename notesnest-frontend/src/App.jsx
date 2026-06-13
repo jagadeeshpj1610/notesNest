@@ -7,9 +7,9 @@ import ProtectedRoute from './components/ProtectedRoute'
 import HomePage from './pages/HomePage'
 import NotesPage from './pages/NotesPage'
 import NoteDetailsPage from './pages/NoteDetailsPage'
-// import AdminLoginPage from './pages/AdminLoginPage'
-// import AdminUploadPage from './pages/AdminUploadPage'
-// import AdminManageNotesPage from './pages/AdminManageNotesPage'
+import AdminLoginPage from './pages/AdminLoginPage'
+import AdminUploadPage from './pages/AdminUploadPage'
+import AdminManageNotesPage from './pages/AdminManageNotesPage'
 
 function App() {
   return (
@@ -33,14 +33,14 @@ function App() {
             }
           />
 
-          {/* <Route
+          <Route
             path="/admin/notes"
             element={
               <ProtectedRoute>
                 <AdminManageNotesPage />
               </ProtectedRoute>
             }
-          /> */}
+          />
         </Routes>
       </main>
 
